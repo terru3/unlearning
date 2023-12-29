@@ -2,3 +2,5 @@
 .ipynb_checkpoints/
 __pycache__/
 data/
+train_logs/CNN_CIFAR_100_ORIGINAL_SEED_23_deltas.pt
+train_logs/CNN_CIFAR_100_ORIGINAL_SEED_42_deltas.pt
