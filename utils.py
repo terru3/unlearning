@@ -28,6 +28,11 @@ transform_fn = transforms.Compose([
         transforms.Normalize(mean=(0.5071, 0.4865, 0.4409), std=(0.2673, 0.2564, 0.2762))
     ])
 
+## for reverting normalization for visualization purposes
+invTrans = transforms.Normalize(
+                mean=[-0.5071 / 0.2673, -0.4865 / 0.2564, -0.4409 / 0.2762],
+                std=[1 / 0.2673, 1 / 0.2564, 1 / 0.2762])
+
 train_data = torchvision.datasets.CIFAR100(root='./data', train=True, download=True,
                                 transform=transform_fn)
 val_data = torchvision.datasets.CIFAR100(root='./data', train=False, download=True,

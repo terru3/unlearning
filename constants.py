@@ -9,3 +9,8 @@ EPOCHS = 25
 NUM_SHADOW_MODELS = 20
 SHADOW_EPOCHS = 10
 ATTACK_EPOCHS = 10
+
+## for incompetent-teacher unlearning
+TEACHER_STEPS = 600
+STUDENT_LR = 7.5e-4
+# tuned for best unlearning on forget vs. performance on val data tradeoff
