@@ -6,7 +6,7 @@ from utils import set_seed
 from constants import *
 
 class Net(nn.Module):
-    def __init__(self, log_softmax=True):
+    def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(3, 64, 3, 1)
         self.conv2 = nn.Conv2d(64, 128, 3, 1)
@@ -17,7 +17,6 @@ class Net(nn.Module):
         self.batchnorm2d_2 = nn.BatchNorm2d(512)
         self.fc1 = nn.Linear(512*2*2, 128)
         self.fc2 = nn.Linear(128, 100) # 100 classes for fine labels
-        self.log_softmax = log_softmax
 
     def forward(self, x):
         
@@ -39,11 +38,9 @@ class Net(nn.Module):
         x = self.dropout(x)
         x = self.fc2(x)
         
-        if self.log_softmax:
-            x = F.log_softmax(x, dim=-1)
         return x
 
-def get_model(seed=None, student=False, ct_model=None, log_softmax=False):
+def get_model_and_optimizer(seed=None, student=False, ct_model=None):
     """
     student (bool=False): If True, indicates instantiation of a student model to be unlearned via STUDENT_LR
     """
@@ -52,16 +49,13 @@ def get_model(seed=None, student=False, ct_model=None, log_softmax=False):
         
     if seed:
         set_seed(seed)
-    model = Net(log_softmax=log_softmax)
+    model = Net()
     if student:
         model.load_state_dict(ct_model.state_dict())
         optimizer = torch.optim.AdamW(model.parameters(), lr=STUDENT_LR)
     else:
         optimizer = torch.optim.AdamW(model.parameters(), lr=LR)
     return model, optimizer
-
-# this is pretty bad practice. fn name does not indicate optimizer is returned. secondly given log_softmax toggle
-# this should also return the corresponding optimizer (NLL vs. crossentropy) w/o relying on the user to use the right one.
     
 
 class AttackNet(nn.Module):
