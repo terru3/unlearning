@@ -13,6 +13,6 @@ _Updated: 10 Jan 2023, 05:12 GMT_
 |   ✔    | Implement incompetent-teacher unlearning                                                                                                 |
 |   ❌   | Implement verification tests such as membership inference attacks or model inversion attacks                                             |
 |   ❌   | Implement Amnesiac Unlearning and _Unlearning_ from AmnesiacML                                                                           |
-|   ❌   | Implement zero-glance unlearning via error-maximizing noise                                                                              |
+|   ❌   | Implement zero-glance unlearning via error-maximizing noise (UNSIR)                                                                              |
 |   ❌   | Implement evaluation metrics such as unlearn and relearn time, zero retrain forgetting (ZRF), anamnesis index (AIN), JS divergence, etc. |
 |   ❌   | Implement zero-shot unlearning via gated knowledge transfer                                                                              |

@@ -71,7 +71,7 @@ class AttackNet(nn.Module):
     x = self.fc3(x)
     return F.log_softmax(x, dim=1)
 
-def get_attack_model():
+def get_attack_model_and_optimizer():
   model = AttackNet()
   optimizer = torch.optim.AdamW(model.parameters())
   return model, optimizer
