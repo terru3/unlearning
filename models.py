@@ -6,7 +6,10 @@ from utils import set_seed
 from constants import *
 
 class Net(nn.Module):
-    def __init__(self):
+    """
+    TODO
+    """
+    def __init__(self, return_act=False):
         super().__init__()
         self.conv1 = nn.Conv2d(3, 64, 3, 1)
         self.conv2 = nn.Conv2d(64, 128, 3, 1)
@@ -18,17 +21,29 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(512*2*2, 128)
         self.fc2 = nn.Linear(128, 100) # 100 classes for fine labels
 
+        self.return_act = return_act
+
     def forward(self, x):
+
+        x = self.conv1(x)
+        act1 = x
+        x = F.relu(x)
         
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv2(x))
+        x = self.conv2(x)
+        act2 = x
+        x = F.relu(x)
         x = self.batchnorm2d_1(x)
         x = F.max_pool2d(x, 2)
         x = self.dropout(x)
-        
-        x = F.relu(self.conv3(x))
+
+        x = self.conv3(x)
+        act3 = x
+        x = F.relu(x)
         x = F.max_pool2d(x, 2)
-        x = F.relu(self.conv4(x))
+
+        x = self.conv4(x)
+        act4 = x
+        x = F.relu(x)
         x = self.batchnorm2d_2(x)
         x = F.max_pool2d(x, 2)
         x = self.dropout(x)
@@ -37,19 +52,25 @@ class Net(nn.Module):
         x = F.relu(self.fc1(x))
         x = self.dropout(x)
         x = self.fc2(x)
-        
-        return x
 
-def get_model_and_optimizer(seed=None, student=False, ct_model=None):
+        if self.return_act:
+            return x, (act1, act2, act3, act4)
+        else:
+            return x
+
+def get_model_and_optimizer(seed=None,
+                            student=False, ct_model=None,
+                            return_act=False):
     """
     student (bool=False): If True, indicates instantiation of a student model to be unlearned via STUDENT_LR
+    return_act (bool=False): If True, instantiated model will return activation after every conv layer
     """
     if student:
         assert ct_model is not None, 'If initializing a student model, must pass in a competent teacher `ct_model`.'
         
     if seed:
         set_seed(seed)
-    model = Net()
+    model = Net(return_act=return_act)
     if student:
         model.load_state_dict(ct_model.state_dict())
         optimizer = torch.optim.AdamW(model.parameters(), lr=STUDENT_LR)

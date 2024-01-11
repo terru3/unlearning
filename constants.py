@@ -28,6 +28,7 @@ IMPAIR_EPOCHS = 1
 REPAIR_EPOCHS = 1
 
 ## for gated knowledge transfer (GKT)
+GEN_LR = 1e-3
 Z_DIM = 128
 ATTN_BETA = 250 # they used 250 on MNIST
 BAND_PASS_THRESH = 0.01
