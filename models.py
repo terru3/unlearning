@@ -26,23 +26,23 @@ class Net(nn.Module):
     def forward(self, x):
 
         x = self.conv1(x)
-        act1 = x
+        act1 = x # (BATCH_SIZE, 64, 30, 30)
         x = F.relu(x)
         
         x = self.conv2(x)
-        act2 = x
+        act2 = x # (BATCH_SIZE, 128, 28, 28)
         x = F.relu(x)
         x = self.batchnorm2d_1(x)
         x = F.max_pool2d(x, 2)
         x = self.dropout(x)
 
         x = self.conv3(x)
-        act3 = x
+        act3 = x # (BATCH_SIZE, 256, 12, 12)
         x = F.relu(x)
         x = F.max_pool2d(x, 2)
 
         x = self.conv4(x)
-        act4 = x
+        act4 = x # (BATCH_SIZE, 512, 4, 4)
         x = F.relu(x)
         x = self.batchnorm2d_2(x)
         x = F.max_pool2d(x, 2)
