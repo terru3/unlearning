@@ -16,12 +16,13 @@ STUDENT_LR = 7.5e-4
 # tuned for best unlearning on forget vs. performance on val data tradeoff
 
 ## for UNSIR
+NOISE_LR = 0.1
 NOISE_STEPS = 250
 NOISE_LAMBDA = 0.1
 NUM_NOISE_BATCHES = 50
 
-IMPAIR_LR = 0.02
-REPAIR_LR = 0.01
+IMPAIR_LR = 5e-4 ### paper used 0.02
+REPAIR_LR = 1e-4 ### paper used 0.01 but we find catastrophic behaviour
 
 IMPAIR_EPOCHS = 1
 REPAIR_EPOCHS = 1
