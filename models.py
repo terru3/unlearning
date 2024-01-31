@@ -5,10 +5,12 @@ import torch.nn.functional as F
 from utils import set_seed
 from constants import *
 
+
 class Net(nn.Module):
     """
     TODO
     """
+
     def __init__(self, return_act=False):
         super().__init__()
         self.conv1 = nn.Conv2d(3, 64, 3, 1)
@@ -18,36 +20,36 @@ class Net(nn.Module):
         self.dropout = nn.Dropout(0.2)
         self.batchnorm2d_1 = nn.BatchNorm2d(128)
         self.batchnorm2d_2 = nn.BatchNorm2d(512)
-        self.fc1 = nn.Linear(512*2*2, 128)
-        self.fc2 = nn.Linear(128, 100) # 100 classes for fine labels
+        self.fc1 = nn.Linear(512 * 2 * 2, 128)
+        self.fc2 = nn.Linear(128, 100)  # 100 classes for fine labels
 
         self.return_act = return_act
 
     def forward(self, x):
 
         x = self.conv1(x)
-        act1 = x # (BATCH_SIZE, 64, 30, 30)
+        act1 = x  # (BATCH_SIZE, 64, 30, 30)
         x = F.relu(x)
-        
+
         x = self.conv2(x)
-        act2 = x # (BATCH_SIZE, 128, 28, 28)
+        act2 = x  # (BATCH_SIZE, 128, 28, 28)
         x = F.relu(x)
         x = self.batchnorm2d_1(x)
         x = F.max_pool2d(x, 2)
         x = self.dropout(x)
 
         x = self.conv3(x)
-        act3 = x # (BATCH_SIZE, 256, 12, 12)
+        act3 = x  # (BATCH_SIZE, 256, 12, 12)
         x = F.relu(x)
         x = F.max_pool2d(x, 2)
 
         x = self.conv4(x)
-        act4 = x # (BATCH_SIZE, 512, 4, 4)
+        act4 = x  # (BATCH_SIZE, 512, 4, 4)
         x = F.relu(x)
         x = self.batchnorm2d_2(x)
         x = F.max_pool2d(x, 2)
         x = self.dropout(x)
-        
+
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
         x = self.dropout(x)
@@ -58,16 +60,17 @@ class Net(nn.Module):
         else:
             return x
 
-def get_model_and_optimizer(seed=None,
-                            student=False, ct_model=None,
-                            return_act=False):
+
+def get_model_and_optimizer(seed=None, student=False, ct_model=None, return_act=False):
     """
     student (bool=False): If True, indicates instantiation of a student model to be unlearned via STUDENT_LR
     return_act (bool=False): If True, instantiated model will return activation after every conv layer
     """
     if student:
-        assert ct_model is not None, 'If initializing a student model, must pass in a competent teacher `ct_model`.'
-        
+        assert (
+            ct_model is not None
+        ), "If initializing a student model, must pass in a competent teacher `ct_model`."
+
     if seed:
         set_seed(seed)
     model = Net(return_act=return_act)
@@ -77,22 +80,23 @@ def get_model_and_optimizer(seed=None,
     else:
         optimizer = torch.optim.AdamW(model.parameters(), lr=LR)
     return model, optimizer
-    
+
 
 class AttackNet(nn.Module):
-  def __init__(self):
-    super().__init__()
-    self.fc1 = nn.Linear(100, 256) # input = shadow model probs for CIFAR-100
-    self.fc2 = nn.Linear(256, 128)
-    self.fc3 = nn.Linear(128, 1)
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(100, 256)  # input = shadow model probs for CIFAR-100
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 1)
 
-  def forward(self, x):
-    x = F.dropout(F.relu(self.fc1(x)))
-    x = F.dropout(F.relu(self.fc2(x)))
-    x = self.fc3(x)
-    return F.log_softmax(x, dim=1)
+    def forward(self, x):
+        x = F.dropout(F.relu(self.fc1(x)))
+        x = F.dropout(F.relu(self.fc2(x)))
+        x = self.fc3(x)
+        return F.log_softmax(x, dim=1)
+
 
 def get_attack_model_and_optimizer():
-  model = AttackNet()
-  optimizer = torch.optim.AdamW(model.parameters())
-  return model, optimizer
+    model = AttackNet()
+    optimizer = torch.optim.AdamW(model.parameters())
+    return model, optimizer
