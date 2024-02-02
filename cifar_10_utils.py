@@ -40,3 +40,5 @@ train_loader = torch.utils.data.DataLoader(
 )
 # no shuffle for ease of reproducibility when debugging
 val_loader = torch.utils.data.DataLoader(val_data, batch_size=BATCH_SIZE, shuffle=False)
+
+class_labels = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']

@@ -129,22 +129,27 @@ def get_attack_model_and_optimizer():
 #############
 # Vision Transformer
 
-## TODO: write patchify
-# rough idea:
-# self.conv = nn.Conv2d(in_channels, d_model, kernel_size=patch_size, stride=patch_size)
-
-# x = self.conv(x)
-# B, C, H, W = x.shape
-# (B, C, H, W) -> (B, C, (h*ph), (w*pw)) -> (B, ph*pw*C, h*w)
-# then e.g. a layernorm linear layernorm sequential
+## TODO: write ViT module
 
 
 class PatchEmbedding(nn.Module):
-    def __init__(self):
-        pass
+    """
+    Applies patch embeddings to an image.
+    """
+
+    def __init__(self, img_size, patch_size, n_embd, in_channels=3):
+        super().__init__()
+
+        self.patch_size = patch_size
+        self.num_patches = (img_size // patch_size) ** 2
+        self.conv = nn.Conv2d(in_channels, n_embd, kernel_size=patch_size, stride=patch_size)
 
     def forward(self, x):
-        pass
+        # (B, C, img_size, img_size) -> (B, num_patches, n_embd)
+        x = self.conv(x)
+        x = rearrange(x, 'b c h w -> b (h w) c')
+        # alternative to rearrange: x = x.flatten(2).transpose(-1, -2)
+        return x
 
 
 class MLP(nn.Module):
@@ -357,10 +362,25 @@ class ViT(nn.Module):
 
     def __init__(self, return_act=False):
         super().__init__()
+
+        # self.patch_embedding = PatchEmbedding(img_size, patch_size, n_embd)
         pass
 
     def forward(self, x):
         pass
+
+## TODO: add cls token in ViT
+x = self.patch_embedding(x)
+x = self.positional_encoding(x) # or add? x + __?
+# drop out on embeddings after?
+
+# to add cls token:
+
+# x = torch.cat([self.class_token.repeat(batch_size, 1, 1), x], dim=1)
+
+# B = x.shape[0]
+# cls_tokens = self.cls_token.expand(B, -1, -1)
+# x = torch.cat((cls_tokens, x), dim=1)
 
 
 def get_vit_and_optimizer(seed=None):
