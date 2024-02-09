@@ -29,9 +29,14 @@ REPAIR_EPOCHS = 1
 
 ## for gated knowledge transfer (GKT)
 GEN_LR = 1e-3
-Z_DIM = 64  # they used 128
-ATTN_BETA = 250  # they used 250 on MNIST
-BAND_PASS_THRESH = 0.01
-PSEUDO_BATCHES = 1000  # for now, they use 4000 I believe
+Z_DIM = 64  # they use 128
+ATTN_BETA = 250  # they use 250 on MNIST
+BAND_PASS_THRESH = 1e-4  # they use 0.01 but 1e-3 good results too
+PSEUDO_BATCHES = 4000  # they use 4000
 STUDENT_PER_GEN_STEPS = 10  # they use 10
 ## they used 0.5 KL temp for CIFAR btw
+
+## for JiT unlearning
+SIGMA = 0.5  # 0.8 for ViT
+JIT_LR = 3e-4  # 1.5 for ViT
+N_VARIANT = 25
