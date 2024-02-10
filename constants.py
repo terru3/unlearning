@@ -37,6 +37,7 @@ STUDENT_PER_GEN_STEPS = 10  # they use 10
 ## they used 0.5 KL temp for CIFAR btw
 
 ## for JiT unlearning
-SIGMA = 0.5  # 0.8 for ViT
-JIT_LR = 3e-4  # 1.5 for ViT
-N_VARIANT = 25
+SIGMA = 0.5  # 0.8 for ViT, 0.5 for VGG-16
+JIT_LR = 3e-4  # 1.5 for ViT, 3e-4 for VGG-16
+N_VARIANT = 25 # 25 in their code
+MAX_STEPS = 30 # rather than all 63 forget batches
